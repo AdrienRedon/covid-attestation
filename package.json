@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "start": "node app/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -17,6 +18,9 @@
   },
   "homepage": "https://github.com/AdrienRedon/covid-attestation#readme",
   "dependencies": {
-    "puppeteer": "^5.4.1"
+    "axios": "^0.21.0",
+    "express": "^4.17.1",
+    "puppeteer": "^5.4.1",
+    "serve-index": "^1.9.1"
   }
 }

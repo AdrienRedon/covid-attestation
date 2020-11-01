@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Covid attestation</title>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+</head>
+
+<body>
+    <div class="center-align">
+        <h1>Covid Attestation</h1>
+        <p>Générateur d'attestation de déplacement</p>
+        <label>
+            <input id="dynamic-address" type="checkbox" class="filled-in" checked="checked" />
+            <span>Addresse dynamique</span>
+        </label>
+        <br>
+        <button id="generate-btn" class="waves-effect waves-light btn">
+            <i class="material-icons left">sync</i>
+            Générer une nouvelle attestation
+        </button>
+        <button id="download-btn" class="waves-effect waves-light btn">
+            <i class="material-icons left">cloud_download</i>
+            Télécharger la dernière attestation
+        </button>
+        <br>
+        <img src="/assets/stopcovid.png" alt="tous anti covid">
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+    <script>
+        function dynamicAddressGenerate() {
+            navigator.geolocation.getCurrentPosition(pos => {
+                console.log({
+                    lat: pos.coords.latitude,
+                    lon: pos.coords.longitude,
+                });
+                fetch(
+                    '/generate',
+                    {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            lat: '' + pos.coords.latitude,
+                            lon: '' + pos.coords.longitude,
+                        }),
+                    }
+                ).then(() => {
+                    console.log('a new certificate has been generated');
+                });
+            })
+        }
+
+        function generate() {
+            fetch(
+                '/generate',
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({}),
+                }
+            ).then(() => {
+                console.log('a new certificate has been generated');
+            });
+        }
+
+        setInterval(() => {
+            if (document.getElementById('dynamic-address').checked) {
+                dynamicAddressGenerate();
+            } else {
+                generate();
+            }
+        }, 600000);
+
+        document.getElementById('generate-btn').addEventListener('click', () => {
+            if (document.getElementById('dynamic-address').checked) {
+                dynamicAddressGenerate();
+            } else {
+                generate();
+            }
+        });
+
+        document.getElementById('download-btn').addEventListener('click', () => {
+            window.open('/last', '_blank');
+        });
+    </script>
+</body>
+
+</html>
